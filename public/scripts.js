@@ -1,22 +1,86 @@
+// Import necessary Firebase modules
+import { auth, database } from "../src/firebase/firebaseConfig.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { ref, set, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// Function to initialize the application logic
 document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
     const content = document.getElementById('content');
-    
-    document.getElementById('login-form').addEventListener('submit', function(e) {
+    const authSection = document.getElementById('auth-section');
+
+    // Event listener for the login form submission
+    loginForm.addEventListener('submit', handleLogin);
+
+    // Event listener for the register form submission
+    registerForm.addEventListener('submit', handleRegistration);
+
+    // Function to handle login form submission
+    function handleLogin(e) {
         e.preventDefault();
-        const userType = document.getElementById('user-type').value;
-        loadContent(userType);
-    });
-    
+        const email = loginForm.elements['email'].value;
+        const password = loginForm.elements['password'].value;
+        const userType = loginForm.elements['user-type'].value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                loadContent(userType);
+                authSection.style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Error logging in:', error);
+                alert('Error logging in. Please check your credentials.');
+            });
+    }
+
+    // Function to handle registration form submission
+    function handleRegistration(e) {
+        e.preventDefault();
+        const email = registerForm.elements['register-email'].value;
+        const password = registerForm.elements['register-password'].value;
+        const userType = registerForm.elements['register-user-type'].value;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                // Store user details in the database
+                setUserData(user.uid, email, userType);
+                alert('User registered successfully!');
+            })
+            .catch((error) => {
+                console.error('Error registering:', error);
+                alert('Error registering. Please try again.');
+            });
+    }
+
+    // Function to set user data in the database
+    function setUserData(userId, email, userType) {
+        set(ref(database, 'users/' + userId), {
+            email: email,
+            userType: userType
+        });
+    }
+
+    // Function to load content based on user type after login
     function loadContent(userType) {
-        if (userType === 'admin') {
-            loadAdminContent();
-        } else if (userType === 'member') {
-            loadMemberContent();
-        } else if (userType === 'user') {
-            loadUserContent();
+        switch (userType) {
+            case 'admin':
+                loadAdminContent();
+                break;
+            case 'member':
+                loadMemberContent();
+                break;
+            case 'user':
+                loadUserContent();
+                break;
+            default:
+                console.error('Invalid user type');
         }
     }
 
+    // Function to load admin-specific content
     function loadAdminContent() {
         content.innerHTML = `
             <h2>Admin Section</h2>
@@ -34,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
+    // Function to load member-specific content
     function loadMemberContent() {
         content.innerHTML = `
             <h2>Member Section</h2>
@@ -45,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
+    // Function to load user-specific content
     function loadUserContent() {
         content.innerHTML = `
             <h2>User Section</h2>
@@ -56,17 +122,85 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Placeholder functions for buttons (implement as needed)
-    window.showAddMember = function() { alert('Add Member functionality to be implemented'); }
-    window.showUpdateMember = function() { alert('Update/Delete Member functionality to be implemented'); }
-    window.showCreateBill = function() { alert('Create Bill functionality to be implemented'); }
-    window.showAssignFeePackage = function() { alert('Assign Fee Package functionality to be implemented'); }
-    window.showAssignNotification = function() { alert('Assign Notification functionality to be implemented'); }
-    window.showReportExport = function() { alert('Report Export functionality to be implemented'); }
-    window.showSupplementStore = function() { alert('Supplement Store functionality to be implemented'); }
-    window.showDietDetails = function() { alert('Diet Details functionality to be implemented'); }
-    window.showViewBillReceipts = function() { alert('View Bill Receipts functionality to be implemented'); }
-    window.showViewBillNotifications = function() { alert('View Bill Notifications functionality to be implemented'); }
-    window.showViewDetails = function() { alert('View Details functionality to be implemented'); }
-    window.showSearchRecords = function() { alert('Search Records functionality to be implemented'); }
+    // Event listeners for placeholder functions (to be implemented)
+    window.showAddMember = function() {
+        content.innerHTML = `
+            <h2>Add Member</h2>
+            <form id="add-member-form">
+                <label for="member-name">Name:</label>
+                <input type="text" id="member-name" name="member-name" required>
+                <label for="member-email">Email:</label>
+                <input type="email" id="member-email" name="member-email" required>
+                <button type="submit">Add Member</button>
+            </form>
+        `;
+        document.getElementById('add-member-form').addEventListener('submit', addMember);
+    }
+
+    // Placeholder function to add member (to be implemented)
+    function addMember(e) {
+        e.preventDefault();
+        const memberName = document.getElementById('member-name').value;
+        const memberEmail = document.getElementById('member-email').value;
+
+        const membersRef = ref(database, 'members');
+        const newMemberRef = push(membersRef);
+        set(newMemberRef, {
+            name: memberName,
+            email: memberEmail,
+            joinedAt: new Date().toISOString()
+        }).then(() => {
+            console.log('Member added successfully');
+            alert('Member added successfully!');
+        }).catch((error) => {
+            console.error('Error adding member:', error);
+        });
+
+        document.getElementById('add-member-form').reset();
+    }
+
+    // Placeholder functions for user actions (to be implemented)
+    window.showViewBillReceipts = function() {
+        alert('View Bill Receipts functionality to be implemented');
+    }
+
+    window.showViewBillNotifications = function() {
+        alert('View Bill Notifications functionality to be implemented');
+    }
+
+    window.showViewDetails = function() {
+        alert('View Details functionality to be implemented');
+    }
+
+    window.showSearchRecords = function() {
+        alert('Search Records functionality to be implemented');
+    }
+
+    window.showUpdateMember = function() {
+        alert('Update/Delete Member functionality to be implemented');
+    }
+
+    window.showCreateBill = function() {
+        alert('Create Bill functionality to be implemented');
+    }
+
+    window.showAssignFeePackage = function() {
+        alert('Assign Fee Package functionality to be implemented');
+    }
+
+    window.showAssignNotification = function() {
+        alert('Assign Notification functionality to be implemented');
+    }
+
+    window.showReportExport = function() {
+        alert('Export Report functionality to be implemented');
+    }
+
+    window.showSupplementStore = function() {
+        alert('Supplement Store functionality to be implemented');
+    }
+
+    window.showDietDetails = function() {
+        alert('Diet Details functionality to be implemented');
+    }
 });
