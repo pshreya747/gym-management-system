@@ -21,15 +21,15 @@ Members can access their payment receipts and notifications, while users have fe
 
 ## Unified Mentor Internship
 
-This project is conducted under an internship program provided by Unified Mentor. 
+This project is conducted as part of an internship program provided by [Unified Mentor](https://www.linkedin.com/company/unifiedmentor/posts/?feedView=all)
 
-As an intern, I have received invaluable mentorship from experienced industry professionals and skilled student mentors. 
+As an intern, I Have receive mentorship and guidance from experienced industry professionals and skilled student mentors. 
 
-This mentorship has provided me with insights and guidance throughout the project lifecycle, contributing significantly to my professional growth.
+This mentorship aims to support your growth in software development, providing valuable insights and feedback throughout the project lifecycle.
 
 ## Special Thanks
 
-I would like to extend my heartfelt thanks to Unified Mentor for providing me with this opportunity and ongoing support during this internship. 
+I would like to extend our heartfelt thanks to [Unified Mentor](https://www.linkedin.com/company/unifiedmentor/posts/?feedView=all) for providing the opportunity and support for this internship project. 
 
 
 # Contribution
